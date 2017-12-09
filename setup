@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
-if !system('xcode-select -p')
+if !system('xcode-select -p > /dev/null')
   puts 'Please install the Xcode developer tools first'
+  system(%Q(xcode-select --install))
   exit 1
 end
 
@@ -9,7 +10,7 @@ def file_exists?(filename)
   File.exists?(File.expand_path(filename))
 end
 
-pwd = File.dirname(__FILE__)
+pwd = File.dirname(File.expand_path(__FILE__))
 if !pwd.end_with?('.dotfiles')
   puts "Moving #{pwd} to ~/.dotfiles"
   system(%Q(mv #{pwd} ~/.dotfiles))
@@ -49,12 +50,13 @@ if !system('grep "~/.dotfiles" ~/.gitconfig > /dev/null')
 end
 
 if !system('grep "~/.dotfiles" ~/.vimrc > /dev/null')
-  puts 'Creating env-specific vim config file (~/.vimrc.env)'
+  puts 'Creating env-specific vim config file (~/.vimrc)'
   system(%Q(echo 'source ~/.dotfiles/vimrc' >> ~/.vimrc))
+  system(%Q(mkdir -p ~/.config/nvim/ && ln -s ~/.vimrc ~/.config/nvim/init.vim))
 end
 
 if !system('grep "~/.dotfiles" ~/.zshrc > /dev/null')
-  puts 'Creating env-specific zsh config file (~/.zshrc.env)'
+  puts 'Creating env-specific zsh config file (~/.zshrc)'
   system(%Q(echo 'source ~/.dotfiles/zshrc' >> ~/.zshrc))
 end
 
@@ -82,17 +84,20 @@ system(%Q(brew install elixir))
 puts 'Installing Git'
 system(%Q(brew install git))
 
+puts 'Installing Neovim'
+system(%Q(brew install neovim))
+
 puts 'Installing Postgres'
 system(%Q(brew install postgresql))
+
+puts 'Installing Python (3)'
+system(%Q(brew install python3))
 
 puts 'Installing Silver Searcher'
 system(%Q(brew install ag))
 
 puts 'Installing tmux'
 system(%Q(brew install tmux reattach-to-user-namespace))
-
-puts 'Installing Vim'
-system(%Q(brew install vim))
 
 puts 'Installing wget'
 system(%Q(brew install wget))
@@ -104,20 +109,25 @@ puts 'Installing zsh'
 system(%Q(brew install zsh))
 
 # Vim
+puts 'Installing Neovim Python client'
+system(%Q(pip3 install neovim))
+
 puts 'Installing vim plugins'
 system(%Q(vim -c PlugInstall))
 
 # Zsh
-puts 'Changing shell to zsh'
-if !system('grep "/usr/local/bin/zsh" /etc/shells > /dev/null')
-  system(%q(sudo sh -c 'echo /usr/local/bin/zsh >> /etc/shells'))
+if `echo $SHELL`.strip != '/usr/local/bin/zsh'
+  puts 'Changing shell to zsh'
+  if !system('grep "/usr/local/bin/zsh" /etc/shells > /dev/null')
+    system(%q(sudo sh -c 'echo /usr/local/bin/zsh >> /etc/shells'))
+  end
+  system(%Q(chsh -s \`which zsh\`))
 end
-system(%Q(chsh -s \`which zsh\`))
 
 # NVM (requires zsh)
 
-puts 'Installing nvm'
-system(%Q(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash))
+puts 'Installing nvm (may be outdated)'
+system(%Q(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.7/install.sh | bash))
 
 puts 'Installing zsh plugins and node'
 system(%Q(echo "source ~/.zshrc && nvm install node" | zsh -t))

@@ -11,6 +11,8 @@ alias ll=ls
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
+alias vim="nvim"
+alias vimdiff="nvim -d"
 alias stashpull="git stash save && git pull && git stash pop"
 alias t="tmux new"
 
