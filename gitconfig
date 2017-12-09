@@ -1,0 +1,13 @@
+[alias]
+  d = difftool
+  st = status
+[color]
+  grep = true
+[diff]
+  tool = vimdiff
+[difftool]
+  prompt = false
+[pager]
+  grep = false
+[core]
+  excludesfile = ~/.gitignore

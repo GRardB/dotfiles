@@ -1,0 +1,123 @@
+#!/usr/bin/env ruby
+
+if !system('xcode-select -p')
+  puts 'Please install the Xcode developer tools first'
+  exit 1
+end
+
+def file_exists?(filename)
+  File.exists?(File.expand_path(filename))
+end
+
+pwd = File.dirname(__FILE__)
+if !pwd.end_with?('.dotfiles')
+  puts "Moving #{pwd} to ~/.dotfiles"
+  system(%Q(mv #{pwd} ~/.dotfiles))
+end
+
+if !file_exists?('~/dev')
+  puts 'Making dev folder'
+  system(%Q(mkdir ~/dev))
+end
+
+# Sym links
+
+if !file_exists?('~/.gitignore')
+  puts 'Symlinking gitignore'
+  system(%Q(ln -s ~/.dotfiles/gitignore ~/.gitignore))
+end
+
+if !file_exists?('~/.slate')
+  puts 'Symlinking slate config'
+  system(%Q(ln -s ~/.dotfiles/slate ~/.slate))
+end
+
+if !file_exists?('~/.tmux.conf')
+  puts 'Symlinking tmux config'
+  system(%Q(ln -s ~/.dotfiles/tmux.conf ~/.tmux.conf))
+end
+
+# Config
+
+if !system('grep "~/.dotfiles" ~/.gitconfig > /dev/null')
+  puts 'Creating env-specific gitconfig file'
+  gitconfig = '
+  [include]
+      path = ~/.dotfiles/gitconfig
+  '
+  system(%Q(echo '#{gitconfig}' >> ~/.gitconfig))
+end
+
+if !system('grep "~/.dotfiles" ~/.vimrc > /dev/null')
+  puts 'Creating env-specific vim config file (~/.vimrc.env)'
+  system(%Q(echo 'source ~/.dotfiles/vimrc' >> ~/.vimrc))
+end
+
+if !system('grep "~/.dotfiles" ~/.zshrc > /dev/null')
+  puts 'Creating env-specific zsh config file (~/.zshrc.env)'
+  system(%Q(echo 'source ~/.dotfiles/zshrc' >> ~/.zshrc))
+end
+
+# Curl
+
+puts 'Installing antigen'
+system(%Q(mkdir -p /usr/local/share/antigen && curl -L git.io/antigen > /usr/local/share/antigen/antigen.zsh))
+
+if !system('brew help > /dev/null 2> /dev/null')
+  puts 'Installing brew'
+  system(%q(/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"))
+end
+
+puts 'Installing slate'
+system(%Q(cd /Applications && curl http://www.ninjamonkeysoftware.com/slate/versions/slate-latest.tar.gz | tar -xz && cd -))
+
+# Brew
+
+puts 'Installing CMake'
+system(%Q(brew install cmake))
+
+puts 'Installing Elixir'
+system(%Q(brew install elixir))
+
+puts 'Installing Git'
+system(%Q(brew install git))
+
+puts 'Installing Postgres'
+system(%Q(brew install postgresql))
+
+puts 'Installing Silver Searcher'
+system(%Q(brew install ag))
+
+puts 'Installing tmux'
+system(%Q(brew install tmux reattach-to-user-namespace))
+
+puts 'Installing Vim'
+system(%Q(brew install vim))
+
+puts 'Installing wget'
+system(%Q(brew install wget))
+
+puts 'Installing Yarn'
+system(%Q(brew install yarn --without-node))
+
+puts 'Installing zsh'
+system(%Q(brew install zsh))
+
+# Vim
+puts 'Installing vim plugins'
+system(%Q(vim -c PlugInstall))
+
+# Zsh
+puts 'Changing shell to zsh'
+if !system('grep "/usr/local/bin/zsh" /etc/shells > /dev/null')
+  system(%q(sudo sh -c 'echo /usr/local/bin/zsh >> /etc/shells'))
+end
+system(%Q(chsh -s \`which zsh\`))
+
+# NVM (requires zsh)
+
+puts 'Installing nvm'
+system(%Q(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash))
+
+puts 'Installing zsh plugins and node'
+system(%Q(echo "source ~/.zshrc && nvm install node" | zsh -t))
