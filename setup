@@ -38,6 +38,12 @@ if !file_exists?('~/.tmux.conf')
   system(%Q(ln -s ~/.dotfiles/tmux.conf ~/.tmux.conf))
 end
 
+if !file_exists?('~/.tmux/plugins')
+  puts 'Installing Tmux Plugin Manager'
+  system('mkdir -p ~/.tmux/plugins')
+  system('git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm')
+end
+
 # Config
 
 if !system('grep "~/.dotfiles" ~/.gitconfig > /dev/null')

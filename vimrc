@@ -13,16 +13,16 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'mattn/emmet-vim'
 Plug 'mhinz/vim-signify'
+Plug 'rizzatti/dash.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'sickill/vim-pasta'
+Plug 'slashmili/alchemist.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vim-scripts/tComment'
-Plug 'rizzatti/dash.vim'
-
-Plug 'slashmili/alchemist.vim'
 Plug 'w0rp/ale'
 
 call plug#end()
