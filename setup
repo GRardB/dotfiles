@@ -28,6 +28,11 @@ if !file_exists?('~/.gitignore')
   system(%Q(ln -s ~/.dotfiles/gitignore ~/.gitignore))
 end
 
+if !file_exists?('~/.inputrc')
+  puts 'Symlinking inputrc'
+  system(%Q(ln -s ~/.dotfiles/inputrc ~/.inputrc))
+end
+
 if !file_exists?('~/.slate')
   puts 'Symlinking slate config'
   system(%Q(ln -s ~/.dotfiles/slate ~/.slate))
