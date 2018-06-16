@@ -28,6 +28,7 @@ export EDITOR=vim
 
 # path
 export PATH=$PATH:$HOME/.bin
+export PATH=/usr/local/sbin:$PATH
 
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
