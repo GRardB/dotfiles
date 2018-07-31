@@ -1,4 +1,4 @@
-if ! { [ -n "$TMUX" ]; } then
+if [ ! -n "$TMUX" ] && [ ! -n "$VSCODE_CLI" ]; then
   cd ~/dev
 fi
 
