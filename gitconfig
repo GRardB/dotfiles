@@ -1,6 +1,9 @@
 [alias]
   d = difftool
   st = status
+  co = checkout
+  cb = checkout -b
+  db = "!f() { git branch -D \"$1\"; git branch -rd \"origin/$1\"; }; f"
 [color]
   grep = true
 [diff]

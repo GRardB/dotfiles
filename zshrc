@@ -1,4 +1,4 @@
-if [ ! -n "$TMUX" ] && [ ! -n "$VSCODE_CLI" ]; then
+if [ ! -n "$TMUX" ] && [ ! -n "$VSCODE" ]; then
   cd ~/dev
 fi
 
@@ -29,6 +29,7 @@ export EDITOR=vim
 # path
 export PATH=$PATH:$HOME/.bin
 export PATH=/usr/local/sbin:$PATH
+export PATH=/usr/local/bin:$PATH
 
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000

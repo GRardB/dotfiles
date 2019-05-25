@@ -92,6 +92,9 @@ system(%Q(brew install cmake))
 puts 'Installing Elixir'
 system(%Q(brew install elixir))
 
+puts 'Installing Fzf'
+system(%Q(brew install fzf))
+
 puts 'Installing Git'
 system(%Q(brew install git))
 
