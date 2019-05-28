@@ -24,7 +24,7 @@ function chromeusage {
 }
 
 # settings
-export EDITOR=vim
+export EDITOR=nvim
 
 # path
 export PATH=$PATH:$HOME/.bin
@@ -53,7 +53,7 @@ DISABLE_AUTO_TITLE=true
 # colors
 autoload -U colors
 colors
-export TERM=xterm-256color
+# export TERM=xterm-256color
 
 # plugins
 source /usr/local/share/antigen/antigen.zsh

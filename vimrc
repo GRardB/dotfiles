@@ -1,144 +1,170 @@
-if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
-  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  autocmd VimEnter * PlugInstall --sync | source ~/.vimrc
+if empty(glob('~/.local/share/nvim/site/autoload'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-call plug#begin('~/.vim/plugged')
+call plug#begin()
 
-Plug 'Valloric/YouCompleteMe', {'dir': '~/.vim/plugged/YouCompleteMe', 'do': './install.py --tern-completer'}
-Plug 'altercation/vim-colors-solarized'
+" GENERAL VIM PLUGINS
+Plug '/usr/local/opt/fzf'
+Plug 'Xuyuanp/nerdtree-git-plugin' " Shows git status for files in NERDTree
+Plug 'airblade/vim-gitgutter' " Shows git status for lines in a file
+Plug 'airblade/vim-rooter' " Finds the project root for NERDTree/fzf
+Plug 'brooth/far.vim' " Multi-file search/replace
 Plug 'bronson/vim-crosshairs'
+Plug 'ciaranm/detectindent'
+Plug 'dracula/vim', { 'as': 'dracula' } " Color scheme
 Plug 'editorconfig/editorconfig-vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'honza/vim-snippets'
 Plug 'junegunn/fzf.vim'
-Plug 'mattn/emmet-vim'
-Plug 'mhinz/vim-signify'
-Plug 'rizzatti/dash.vim'
+Plug 'kien/rainbow_parentheses.vim'
+Plug 'mhinz/vim-signify' " Faster than gitgutter
+Plug 'mhinz/vim-startify' " Pretty start screen
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'} " Language server support
+Plug 'ryanoasis/vim-devicons' " Pretty icons for filetypes
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
-Plug 'sickill/vim-pasta'
-Plug 'slashmili/alchemist.vim'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
+Plug 'sickill/vim-pasta' "Pasting in Vim with indentation adjusted
+Plug 'terryma/vim-multiple-cursors'
+Plug 'thaerkh/vim-workspace'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-fugitive' " I mostly use this for :Gblame
+Plug 'tpope/vim-surround'
+Plug 'wincent/terminus' " Better mouse support, cursor changes by mode
 Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'vim-scripts/tComment'
-Plug 'w0rp/ale'
+
+" CSS PLUGINS
+Plug 'ap/vim-css-color'
+
+" HTML PLUGINS
+Plug 'mattn/emmet-vim'
+Plug 'alvan/vim-closetag'
+
+" PHP PLUGINS
+Plug 'stephpy/vim-php-cs-fixer'
 
 call plug#end()
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:alchemist_tag_disable = 1
-
-" clipboard
-set pastetoggle=<F2>
+" GENERAL CONFIG
+" ==============
+set backspace=indent,eol,start
+set cindent
 set clipboard=unnamed
-
-" colors
-set t_Co=256
-set background=dark
-colorscheme solarized
-let g:airline_theme='solarized'
-
-" commands
-command! ProjectFiles execute 'Files' s:find_git_root()
-
-" crosshairs
-set cursorline   " enable the horizontal line
-set cursorcolumn " enable the vertical line
-
-" elixir
-let g:alchemist_tag_disable = 1
-
-" enable all the things
-filetype plugin indent on
-syntax enable
-
-" files
-set autochdir
+set confirm " Ask if you'd like to save the file before quitting
+set copyindent
 set encoding=utf-8
+set gdefault " When searching/replacing, always replace all occurrences on a line
+set hidden " This allows buffers to be hidden if you've modified a buffer.
+set history=1000
+set ignorecase
+set incsearch
+set laststatus=2
+set lazyredraw
+set nocompatible
+set nohlsearch " Don't highlight all search results
+set number
+set regexpengine=1
+set scrolloff=5
+set shell=/usr/local/bin/zsh
+set smartcase
+set sw=2
+set t_Co=256
+set undolevels=1000
+set visualbell
 set wildignore=*.swp,*.pyc,*.class*.io,*~
 set wildmenu
 set wildmode=longest,list,full
 
-" file types
-au BufNewFile,BufRead *.js set ft=javascript.jsx
-au BufNewFile,BufRead *.tsx set ft=typescript.jsx
-au BufRead,BufNewFile *.md setlocal textwidth=80
+map <Space> <Leader>
+nnoremap <F1> <ESC>
+inoremap <F1> <ESC>
 
-" fonts
-let g:airline_powerline_fonts = 1
-let g:airline#extensions#ale#enabled = 1
+color dracula
+filetype plugin indent on
+syntax enable
 
-" functions
-function! s:find_git_root()
-  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
+" BUFFERS
+map <Leader>t :enew<CR>
+map <Leader>w :bd<CR>
+map <Leader>h :bprevious<CR>
+map <Leader>l :bnext<CR>
+map <Leader><Left> :bprevious<CR>
+map <Leader><Right> :bnext<CR>
 
-function s:MkNonExDir(file, buf)
-    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-        let dir=fnamemodify(a:file, ':h')
-        if !isdirectory(dir)
-            call mkdir(dir, 'p')
-        endif
-    endif
-endfunction
-
-" fzf
-let $FZF_DEFAULT_COMMAND='ag -g "" --hidden --ignore .git --ignore node_modules'
-
-" history
-set history=1000
-set undolevels=1000
-
-" hooks
-autocmd BufWritePre * if index(['markdown'], &ft) < 0 | %s/\s\+$//e " strip trailing whitespace except in markdown
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-augroup BWCCreateDir
-    autocmd!
-    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
-
-" indentation
+" CODE FORMATTING
 set autoindent
 set smartindent
-set backspace=indent,eol,start
-set cindent
-set copyindent
 set expandtab
-set sts=2
-set sw=2
 set ts=2
+set sts=2
 
-" markdown
-let g:vim_markdown_folding_disabled = 1
+" CUSTOM COMMANDS
+command! Config :e ~/.dotfiles/vimrc
 
-" misc options
-set mouse=r "come on, neovim
-set nocompatible
-set number
-set scrolloff=5
-set shell=/usr/local/bin/zsh
-set laststatus=2
+" AIRLINE CONFIG
+let g:airline#extensions#tabline#enabled = 1
+" Use pretty symbols for Airline
+let g:airline_powerline_fonts = 1
+" Make the tabs show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
 
-" postgresql
-let g:sql_type_default = 'pgsql'
+" COC CONFIG
+" Use tab for trigger completion with characters ahead and navigate
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" search
-set gdefault
-set ignorecase
-set incsearch
-set nohlsearch
-set smartcase
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
-" shortcuts
-nnoremap <C-n> :NERDTreeToggle<CR>
-nnoremap <silent> <C-p> :ProjectFiles <cr>
-noremap <F1> <Esc>
-inoremap <F1> <Esc>
+" Use tab for snippet expansion
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 
-" sounds
-set visualbell
+let g:coc_snippet_next = '<tab>'
+
+" CROSSHAIR CONFIG
+set cursorline   " enable the horizontal line
+set cursorcolumn " enable the vertical line
+
+" FZF CONFIG
+let $FZF_DEFAULT_COMMAND='rg --hidden --files'
+let g:far#source='rg'
+
+nnoremap <silent> <C-p> :call fzf#vim#files('', fzf#vim#with_preview('right')) <CR>
+map <Leader>f :Rg <CR>
+
+" Don't search filename when using :Rg
+command! -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>),
+  \   1,
+  \   {'options': '--delimiter : --nth 2..'})
+
+" NERDTREE CONFIG
+map <Leader>b :NERDTreeToggle<CR>
+map <Leader>r :NERDTreeFind<CR>
+
+" PHP CS FIXER CONFIG
+autocmd BufWritePost *.php silent! call PhpCsFixerFixFile()
+
+" RAINBOW PARENTHESES CONFIG
+" Always enable:
+au VimEnter * RainbowParenthesesToggle
+au Syntax * RainbowParenthesesLoadRound
+au Syntax * RainbowParenthesesLoadSquare
+au Syntax * RainbowParenthesesLoadBraces
+
+" VIM WORKSPACE CONFIG
+nnoremap <leader>s :ToggleWorkspace<CR>
+let g:workspace_session_directory = $HOME . '/.config/nvim/sessions/'
+let g:workspace_session_disable_on_args = 1
+let g:workspace_autosave = 0
