@@ -136,7 +136,7 @@ set cursorline   " enable the horizontal line
 set cursorcolumn " enable the vertical line
 
 " FZF CONFIG
-let $FZF_DEFAULT_COMMAND='rg --hidden --files'
+let $FZF_DEFAULT_COMMAND='rg --hidden --files -g "!.git" --ignore-file ~/.gitignore'
 let g:far#source='rg'
 
 nnoremap <silent> <C-p> :call fzf#vim#files('', fzf#vim#with_preview('right')) <CR>
@@ -146,10 +146,10 @@ map <Leader>f :Rg <CR>
 command! -nargs=* Rg
   \ call fzf#vim#grep(
   \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>),
-  \   1,
-  \   {'options': '--delimiter : --nth 2..'})
+  \   1)
 
 " NERDTREE CONFIG
+let NERDTreeShowHidden=1
 map <Leader>b :NERDTreeToggle<CR>
 map <Leader>r :NERDTreeFind<CR>
 
